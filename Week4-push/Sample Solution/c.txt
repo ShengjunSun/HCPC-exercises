@@ -1,0 +1,52 @@
+"""INPUT TEMPLATE - I copy paste this part to the top of every solution"""
+import sys
+
+toks = (tok for tok in sys.stdin.read().split())
+"""END OF TEMPLATE"""
+
+T = int(next(toks))
+for _ in range(T):
+    N = int(next(toks))
+
+    # Find the smallest factor of N > 1:
+    smallest_factor = None
+    for f in range(2, N):
+        # If we never find a factor <= sqrt(N),
+        # then N must be prime, so we can stop looping to save time:
+        if f*f > N:
+            break
+        # If N % f == 0, then f is a factor of N,
+        # so the smallest factor is f and we can stop looping:
+        if N % f == 0:
+            smallest_factor = f
+            break
+
+    # If smallest_factor is None, then N is prime.
+    # Therefore, for any a+b=N where a and b are positive, gcd(a,b)=1
+    # because if gcd(a,b)=d for some d > 1, then d would be a factor of N,
+    # contradicting that N is prime.
+    # Ergo, lcm(a,b)=a*b/gcd(a,b)=a*b
+    # So we just need to minimize a*b given that a+b=n
+    # The easiest way to do this is choose a and b which are far apart as possible,
+    # so we choose a=1 and b=N-1
+    if smallest_factor == None:
+        print(1, N-1)
+    else:
+        # Otherwise, the biggest factor of N other than N itself is N/smallest_factor:
+        biggest_factor = N//smallest_factor
+        # Now, we need to make some observations:
+        # Consider a+b=N where a <= b. Then, suppose that a is *not* a factor of b.
+        # Then, the lcm(a,b) will be some multiple of b which is greater than b,
+        # which means lcm(a,b) is at least 2*b.
+        # Since a <= b and a+b=N, we have b >= N/2, so lcm(a,b) >= N.
+        # Now, we know that we could just choose a=1 and b=N-1 and get an LCM of N-1 < N,
+        # so this shows it is never optimal to choose a+b=N where a is not a factor of b.
+        # Next, consider the case where a+b=N, with a <= b, and a is a factor of b.
+        # Then, lcm(a,b) is just b.
+        # Ergo, we just need to minimize b under a+b=N, with the constraint that a is a factor of b.
+        # Since we are minimizing b, and a+b=N, we need a to be as big as possible.
+        # Since a is a factor of b, and a+b=N, it follows that a must be a factor of N.
+        # Ergo, since we need a to be as big as possible and a must be a factor of N,
+        # we must choose a to be the biggest factor of N.
+        # Since a+b=N, this gives us b = N - [biggest factor of N], which is the minimum possible LCM:
+        print(biggest_factor, N-biggest_factor)

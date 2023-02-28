@@ -1,0 +1,40 @@
+"""INPUT TEMPLATE - I copy paste this part to the top of every solution"""
+import sys
+
+toks = (tok for tok in sys.stdin.read().split())
+"""END OF TEMPLATE"""
+
+MAXB = 1000000
+MAXN = 10
+
+# biggest_prime[a] is the biggest prime factor of a found so far
+biggest_prime = [None for _ in range(MAXB+1)]
+# num_primes[a] is the number of prime factors of a
+num_primes = [0 for _ in range(MAXB+1)]
+
+for p in range(2, MAXB+1):
+    # If smallest_prime[p] is None, then p is prime
+    if biggest_prime[p] == None:
+        # Update the biggest_prime of all the multiples of p:
+        for x in range(p, MAXB+1, p):
+            biggest_prime[x] = p
+
+    # If biggest_prime[p] != biggest_prime[p/biggest_prime[p]],
+    # then p has a new prime factor, so add 1 to num_primes[p/biggest_prime[p]]
+    # Otherwise, p does not have a new prime factor, so do not add 1
+    num_primes[p] = num_primes[p//biggest_prime[p]] + int(biggest_prime[p] != biggest_prime[p//biggest_prime[p]])
+
+# cnt[n][a] is the number of n-factorful numbers <= a
+cnt = [[0 for _ in range(MAXB+1)] for _ in range(MAXN+1)]
+for n in range(MAXN+1):
+    for b in range(1, MAXB+1):
+        # Add 1 to the number of n-factorful numbers if num_primes[b] == n
+        cnt[n][b] = cnt[n][b-1] + int(num_primes[b] == n)
+
+T = int(next(toks))
+for _ in range(T):
+    a = int(next(toks))
+    b = int(next(toks))
+    n = int(next(toks))
+    # Subtract prefix sums to count number of n-factorful numbers in the interval a <= _ <= b
+    print(cnt[n][b] - cnt[n][a-1])
