@@ -1,0 +1,170 @@
+#include <bits/stdc++.h>
+typedef long long ll;
+const int BUFFER = 1 << 18;
+struct ostream
+{
+    char buffer[BUFFER], *pos = buffer, *end = buffer + BUFFER;
+    ~ostream() { flush(); }
+    void flush() { fwrite(buffer, 1, pos - buffer, stdout), pos = buffer; }
+    void put(char ch)
+    {
+        if (pos == end)
+            flush();
+        *(pos++) = ch;
+    }
+    template <typename V>
+    void put(V num)
+    {
+        if (num)
+            put(num / 10), put((char)(num % 10 + '0'));
+    }
+    ostream &operator<<(char s) { return put(s), *this; }
+    ostream &operator<<(const char *s)
+    {
+        while (*s)
+            put(*(s++));
+        return *this;
+    }
+    template <typename V, std::enable_if_t<std::is_integral_v<V>, bool> = true>
+    ostream &operator<<(V num)
+    {
+        if (num < 0)
+            put('-'), put(-num);
+        else if (num == 0)
+            put('0');
+        else
+            put(num);
+        return *this;
+    }
+    template <typename V, std::enable_if_t<std::is_floating_point_v<V>, bool> = true>
+    ostream &operator<<(V num)
+    {
+        if (num < 0)
+            num *= -1, put('-');
+        ll whole = (ll)num;
+        num -= whole;
+        *this << whole << '.';
+        for (int i = 0; i < 8; i++)
+        {
+            char ch = num *= 10;
+            put((char)(ch + '0')), num -= ch;
+        }
+        return *this;
+    }
+} cout;
+struct istream
+{
+    char buffer[BUFFER], *pos = buffer, *end = buffer;
+    int get()
+    {
+        if (pos == end)
+        {
+            end = buffer + fread(buffer, 1, BUFFER, stdin), pos = buffer;
+            if (pos == end)
+                return 0;
+        }
+        return *(pos++);
+    }
+    istream &operator>>(char &ch)
+    {
+        while ((ch = get()) <= ' ')
+            ;
+        return *this;
+    }
+    template <typename V, std::enable_if_t<std::is_integral_v<V>, bool> = true>
+    istream &operator>>(V &num)
+    {
+        char ch;
+        while ((ch = get()) < '-')
+            ;
+        int sign = ch == '-';
+        num = sign ? 0 : ch - '0';
+        while ((ch = get()) > ' ')
+            num = 10 * num + ch - '0';
+        if (sign)
+            num = -num;
+        return *this;
+    }
+} cin;
+#ifdef LOCAL
+#include "debug.h"
+#else
+#define log(...) 9
+#endif
+ 
+template <int maxN>
+struct string
+{
+    char ch[maxN + 1], *start = ch, *last = ch;
+    int operator==(const char *a) { return strcmp(start, a) == 0; }
+    char &operator[](int i) { return ch[i]; }
+    friend istream &operator>>(istream &in, string &a)
+    {
+        a.last = a.start;
+        while ((*a.last = in.get()) > ' ')
+            a.last++;
+        *a.last = 0;
+        return in;
+    }
+    template <typename V>
+    friend V &operator<<(V &out, const string &a)
+    {
+        for (auto it = a.start; it != a.last; it++)
+            out << *it;
+        return out;
+    }
+};
+string<500000> s;
+ 
+void testCase()
+{
+    int q;
+    cin >> q;
+ 
+    ll sSize = 1, sTotal = 1, tSize = 1;
+    int isT = 0;
+ 
+    while (q--)
+    {
+        int d, k;
+        cin >> d >> k >> s;
+ 
+        if (!isT)
+            if (d == 1)
+            {
+                sTotal += (ll)k * (s.last - s.start);
+                for (auto it = s.start; it < s.last; it++)
+                    if (*it == 'a')
+                        sSize += k;
+            }
+            else
+            {
+                for (auto it = s.start; it < s.last; it++)
+                    if (*it == 'a')
+                        tSize += k;
+                    else
+                        isT = 1;
+            }
+ 
+        if (isT)
+            cout << "YES\n";
+	// T中无非 a
+	// T中全是 a
+	// 所以如果 s 比 t 长；s 不小于 t。
+        else if (sTotal > tSize)
+            cout << "NO\n";
+        else if (sTotal == sSize && sSize < tSize)
+            cout << "YES\n";
+        else
+            cout << "NO\n";
+    }
+}
+ 
+int main()
+{
+    int t;
+    cin >> t;
+    for (int i = 1; i <= t; i++)
+        log("Testcase", i), testCase();
+    return 0;
+}

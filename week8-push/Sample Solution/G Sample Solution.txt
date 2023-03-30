@@ -1,0 +1,32 @@
+#include<bits/stdc++.h>
+using namespace std;
+struct node{
+	int l,r,k,p;
+}a[100010],b[100010];
+int n,m,res[100010],ans;
+multiset<pair<int,int> >S;
+multiset<pair<int,int> >::iterator it;
+inline bool cmp(node x,node y){
+	return x.r==y.r?x.l<y.l:x.r<y.r;
+}
+int main(){
+	scanf("%d",&n);
+	for(int i=1;i<=n;i++)scanf("%d%d",&a[i].l,&a[i].r),a[i].p=i;
+	scanf("%d",&m);
+	for(int i=1;i<=m;i++)scanf("%d%d%d",&b[i].l,&b[i].r,&b[i].k),b[i].p=i;
+	sort(a+1,a+n+1,cmp);
+	sort(b+1,b+m+1,cmp);
+	for(int i=1,j=1;i<=m;i++){
+		while(j<=n&&a[j].r<=b[i].r)S.insert({a[j].l,a[j].p}),j++;
+		while(b[i].k){
+			it=S.lower_bound({b[i].l,0});
+			if(it==S.end())break;
+			res[(*it).second]=b[i].p;ans++;b[i].k--;
+			S.erase(it);
+		}
+	}
+	if(ans!=n)return puts("NO"),0;
+	puts("YES");
+	for(int i=1;i<=n;i++)printf("%d ",res[i]);
+	return 0;
+}

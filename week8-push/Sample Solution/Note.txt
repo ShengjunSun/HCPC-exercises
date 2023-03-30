@@ -1,0 +1,8 @@
+Those solutions are not written by me; 
+they are from other programmers shared on internet. 
+
+For E and F; my solution also work; but is a bit slow. 
+
+For G; my approach is slow; and as a result, learnt from the sample solution about a faster approach. 
+
+Best wishes. 

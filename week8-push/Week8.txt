@@ -1,0 +1,15 @@
+
+For this week; I actively practiced 7 coding problems related with applying greedy algorithm. 
+
+The problems are from this link: 
+https://vjudge.net/contest/547495
+
+A - CodeForces 1353B
+B - CodeForces 472C
+C - CodeForces 1765B
+D - CodeForces 1486A
+E - CodeForces 1791G1
+F - CodeForces 1742F
+G - CodeForces 497C
+
+For G; my code is running too slow. 
